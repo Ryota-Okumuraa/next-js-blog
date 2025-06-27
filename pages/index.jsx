@@ -1,23 +1,29 @@
-import { Geist, Geist_Mono } from "next/font/google";
-import Layout from "@/components/Layout";
+import Layout, { siteTitle } from "@/components/Layout";
 import utileStyles from "../styles/utils.module.css"
 import Link from "next/link";
 import styles from "../styles/Home.module.css"
+import { getPostDatas } from "@/lib/post";
+import Head from "next/head";
 
+//SSGの場合
+export async function getStaticProps() {
+  const allPostData = getPostDatas();
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+  console.log(allPostData);
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+  return {
+    props: {
+      allPostData,
+    },
+  };
+}
 
-export default function Home() {
+export default function Home({ allPostData }) {
   return (
-    <Layout>
+    <Layout home>
+      <Head>
+        <title>{siteTitle}</title>
+      </Head>
       <section>
         <p className={utileStyles.headingMd}>簡単な自己紹介文が入ります！</p>
       </section>
@@ -25,46 +31,18 @@ export default function Home() {
       <section>
         <h2>👾勉強ブログ</h2>
         <div className={styles.grid}>
-          <article>
-            <Link href="/">
-              <img className={styles.thumbnailImage} src="/thumbnail01.jpg" alt="" />
-            </Link>
-            <Link href="/" className={utileStyles.boldText}>
-              記事１
-            </Link>
-            <br />
-            <small className={utileStyles.lightText}>july 26,2020</small>
-          </article>
-          <article>
-            <Link href="/">
-              <img className={styles.thumbnailImage} src="/thumbnail02.jpg" alt="" />
-            </Link>
-            <Link href="/" className={utileStyles.boldText}>
-              記事１
-            </Link>
-            <br />
-            <small className={utileStyles.lightText}>july 26,2020</small>
-          </article>
-          <article>
-            <Link href="/">
-              <img className={styles.thumbnailImage} src="/thumbnail03.jpeg" alt="" />
-            </Link>
-            <Link href="/" className={utileStyles.boldText}>
-              記事１
-            </Link>
-            <br />
-            <small className={utileStyles.lightText}>july 26,2020</small>
-          </article>
-          <article>
-            <Link href="/">
-              <img className={styles.thumbnailImage} src="/thumbnail04.jpg" alt="" />
-            </Link>
-            <Link href="/" className={utileStyles.boldText}>
-              記事１
-            </Link>
-            <br />
-            <small className={utileStyles.lightText}>july 26,2020</small>
-          </article>
+          {allPostData.map(({ id, title, date, thumbnail }) => (
+            <article key={id}>
+              <Link href={`/posts/${id}`}>
+                <img className={styles.thumbnailImage} src={`${thumbnail}`} alt={title} />
+              </Link>
+              <Link href={id} className={utileStyles.boldText}>
+                {title}
+              </Link>
+              <br />
+              <small className={utileStyles.lightText}>{date}</small>
+            </article>
+          ))}
         </div>
 
       </section>
