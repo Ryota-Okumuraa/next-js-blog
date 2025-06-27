@@ -25,7 +25,7 @@ export default function Home({ allPostData }) {
         <title>{siteTitle}</title>
       </Head>
       <section>
-        <p className={utileStyles.headingMd}>簡単な自己紹介文が入ります！</p>
+        <p className={utileStyles.headingMd}>Next.Jsを勉強中です。</p>
       </section>
 
       <section>
